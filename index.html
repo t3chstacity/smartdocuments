@@ -100,6 +100,7 @@
     <!-- Data Engine & Dynamic Control Script -->
     <script>
         let selectedReport = null;
+        let customerEmail='';
 
         const mockReports = [
             { id: 1, title: "American fullz", category: "Fullz", region: "America", date: "June 2026", price: 15, summary: "Document containing 10 American fullz ready for online verification" },
@@ -178,7 +179,8 @@
             if (!report) return;
             
             selectedReport = report;
-            payWithPaystack();
+            document.getElementById('customerEmail').value='';
+            document.getElementById('purchaseModal').classList.remove('hidden');
         }
 
         // Preview Modal
@@ -204,7 +206,7 @@
 
             const handler = PaystackPop.setup({
                 key: 'pk_live_0c7001077a32d547c1474f46412efb895a557d67', // Substitute with your active key
-                email: 'info@smartdocuments.com',
+                email: customerEmail,
                 amount: totalAmountMinorUnits,
                 currency: 'KES', 
                 metadata: {
@@ -237,5 +239,24 @@
             renderReports(mockReports);
         };
     </script>
+
+<!-- Purchase Modal -->
+<div id="purchaseModal" class="fixed inset-0 hidden bg-black/50 z-50 flex items-center justify-center">
+<div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+<h2 class="text-xl font-bold mb-2">Complete Purchase</h2>
+<p class="mb-4">Enter your email to receive the purchased file.</p>
+<input id="customerEmail" type="email" class="w-full border rounded p-3 mb-4" placeholder="you@example.com">
+<div class="flex justify-end gap-2">
+<button onclick="closePurchaseModal()" class="border px-4 py-2 rounded">Cancel</button>
+<button onclick="confirmPurchase()" class="bg-indigo-600 text-white px-4 py-2 rounded">Continue</button>
+</div></div></div>
+<script>
+function closePurchaseModal(){document.getElementById('purchaseModal').classList.add('hidden');}
+function confirmPurchase(){
+ const e=document.getElementById('customerEmail').value.trim();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){alert('Enter a valid email');return;}
+ customerEmail=e;closePurchaseModal();payWithPaystack();
+}
+</script>
 </body>
 </html>
