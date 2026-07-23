@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartDocuments</title>
+    <!-- Tailwind CSS for modern layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for clean UI icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Paystack Inline Popup Script Insertion -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl font-bold tracking-tight text-slate-900"><span class="text-indigo-600">SmartDocuments</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero & Search Section -->
+    <section id="search-section" class="max-w-4xl mx-auto pt-16 pb-8 px-4 text-center">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight sm:text-5xl mb-4">
+            Fullz, DLs and Verification Documents
+        </h1>
+        <p class="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+            Access reliable documents on Fullz, DLs, and Verification.
+        </p>
+        
+        <!-- Search Bar Component -->
+        <div class="relative max-w-2xl mx-auto shadow-xl rounded-2xl bg-white p-2 border border-slate-200">
+            <div class="flex items-center">
+                <i data-lucide="search" class="w-6 h-6 text-slate-400 ml-3"></i>
+                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search industries, trends, or consumer reports... (e.g., 'AI', 'EV')" class="w-full px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none text-lg">
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results / Main Feed -->
+    <main class="max-w-5xl mx-auto px-4 pb-24">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-slate-900" id="resultsCount">Featured Intelligence Reports</h2>
+            <span class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full uppercase tracking-wider">Updated Daily</span>
+        </div>
+
+        <!-- Sequential Reports Container -->
+        <div id="reportsContainer" class="space-y-4">
+            <!-- Dynamic Injection via JavaScript -->
+        </div>
+    </main>
+
+    <!-- REPORT PREVIEW & PAYWALL MODAL -->
+    <div id="previewModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-start">
+                <div>
+                    <span id="modalCategory" class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Category</span>
+                    <h3 id="modalTitle" class="text-2xl font-bold text-slate-900 mt-1">Report Title</h3>
+                </div>
+                <button onclick="closeModal('previewModal')" class="p-1 rounded-lg hover:bg-slate-100"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-6 flex-1">
+                <!-- Executive Summary -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">Executive Summary</h4>
+                    <p id="modalSummary" class="text-slate-600 leading-relaxed"></p>
+                </div>
+
+                <!-- Blurred Content Paywall Visual -->
+                <div class="relative rounded-xl border border-slate-200 bg-slate-50 p-6 overflow-hidden">
+                    <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3">Granular Data & Forecasts</h4>
+                    <div class="space-y-2 filter blur-[4px] pointer-events-none select-none">
+                        <div class="h-4 bg-slate-300 rounded w-3/4"></div>
+                        <div class="h-4 bg-slate-300 rounded w-1/2"></div>
+                        <div class="h-24 bg-slate-200 rounded my-4"></div>
+                        <div class="h-4 bg-slate-300 rounded w-5/6"></div>
+                    </div>
+                    
+                    <!-- Paywall Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-white via-white/95 to-transparent flex flex-col items-center justify-center p-6 text-center">
+                        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-full mb-3">
+                            <i data-lucide="lock" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900">Unlock Full Access</h4>
+                        <p class="text-sm text-slate-500 max-w-md mt-1 mb-6">Gain full access to raw data matrices, CSV downloads, and future updates for this sector.</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Engine & Dynamic Control Script -->
+    <script>
+        let selectedReport = null;
+
+        const mockReports = [
+            { id: 1, title: "American fullz", category: "Fullz", region: "America", date: "June 2026", price: 15, summary: "Document containing 10 American fullz ready for online verification" },
+            { id: 2, title: "UK fullz", category: "Fullz", region: "United Kingdom", date: "May 2026", price: 10, summary: "Document containing 10 United Kingdom fullz ready for online verification" },
+            { id: 3, title: "UK Driving Licence", category: "Driving License", region: "United Kingdom", date: "June 2026", price: 20, summary: "United Kingdom driving licences ready for online verification" },
+            { id: 4, title: "American fullz", category: "Fullz", region: "America", date: "April 2026", price: 25, summary: "Document containing 30 American fullz ready for online verification" },
+            { id: 5, title: "California fullz", category: "Fullz", region: "America", date: "April 2026", price: 5, summary: "Document containing 5 California fullz." },
+            { id: 6, title: "UK Passport", category: "Passport", region: "United Kingdom", date: "May 2026", price: 5, summary: "Register and verify your online account with a UK passport." },
+            { id: 7, title: "American Passport", category: "Passport", region: "America", date: "July 2026", price: 25, summary: "Register and verify your online account with an American passport." }
+        ];
+
+        // Render Routine with Purchase Button
+        function renderReports(reportsList) {
+            const container = document.getElementById('reportsContainer');
+            const countLabel = document.getElementById('resultsCount');
+            
+            countLabel.textContent = `${reportsList.length} document(s) Found`;
+            container.innerHTML = '';
+
+            if (reportsList.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-slate-200">
+                        <i data-lucide="alert-circle" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                        <p class="text-slate-500 font-medium">No matching documents found.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            reportsList.forEach(report => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition duration-200 flex flex-col md:flex-row md:items-center justify-between gap-6";
+                
+                card.innerHTML = `
+                    <div class="space-y-2 max-w-2xl cursor-pointer" onclick="openPreview(${report.id})">
+                        <div class="flex items-center space-x-3 text-xs font-semibold text-slate-500">
+                            <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded">${report.category}</span>
+                            <span>•</span>
+                            <span class="flex items-center"><i data-lucide="globe" class="w-3.5 h-3.5 mr-1"></i>${report.region}</span>
+                            <span>•</span>
+                            <span>${report.date}</span>
+                            <span>•</span>
+                            <span class="text-emerald-600 font-bold">$${report.price}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 hover:text-indigo-600 transition">${report.title}</h3>
+                        <p class="text-slate-600 text-sm line-clamp-2">${report.summary}</p>
+                    </div>
+                    <div class="flex items-center space-x-3 shrink-0">
+                        <button onclick="directPurchase(event, ${report.id})" class="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition flex items-center shadow-sm">
+                            <i data-lucide="shopping-cart" class="w-4 h-4 mr-1.5"></i> Purchase
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // Search Filter
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = mockReports.filter(r => 
+                r.title.toLowerCase().includes(query) || 
+                r.category.toLowerCase().includes(query) || 
+                r.summary.toLowerCase().includes(query)
+            );
+            renderReports(filtered);
+        }
+
+        // Direct Purchase Invocation for Main Feed
+        function directPurchase(event, id) {
+            event.stopPropagation(); // Prevents opening the preview modal
+            const report = mockReports.find(r => r.id === id);
+            if (!report) return;
+            
+            selectedReport = report;
+            payWithPaystack();
+        }
+
+        // Preview Modal
+        function openPreview(id) {
+            const report = mockReports.find(r => r.id === id);
+            if (!report) return;
+
+            selectedReport = report;
+            document.getElementById('modalCategory').textContent = `${report.category} / ${report.region}`;
+            document.getElementById('modalTitle').textContent = report.title;
+            document.getElementById('modalSummary').textContent = report.summary;
+            document.getElementById('modalSinglePrice').textContent = `$${report.price}`;
+            
+            document.getElementById('previewModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Paystack Payment Handler
+        function payWithPaystack() {
+            if (!selectedReport) return;
+
+            const totalAmountMinorUnits = selectedReport.price * 100 * 129.25; // Convert base unit to KES kobo equivalence
+
+            const handler = PaystackPop.setup({
+                key: 'pk_live_0c7001077a32d547c1474f46412efb895a557d67', // Substitute with your active key
+                email: 'customer@insightprobe.com',
+                amount: totalAmountMinorUnits,
+                currency: 'KES', 
+                metadata: {
+                    reportId: selectedReport.id,
+                    custom_fields: [
+                        {
+                            display_name: "Report Title",
+                            variable_name: "report_title",
+                            value: selectedReport.title
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    alert('Payment successful! Reference sequence: ' + response.reference);
+                    closeModal('previewModal');
+                },
+                onClose: function() {
+                    alert('Transaction canceled.');
+                }
+            });
+
+            handler.openIframe();
+        }
+
+        function closeModal(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+        }
+
+        window.onload = () => {
+            renderReports(mockReports);
+        };
+    </script>
+</body>
+</html>
